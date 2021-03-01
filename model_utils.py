@@ -2,6 +2,7 @@ import torch.functional as F
 import torch
 from typing import Tuple
 from tqdm import tqdm
+from torchsummary import summary
 
 
 def train(model, device, train_loader, optimizer, scheduler, loss_fn) -> Tuple[float, float]:
@@ -66,7 +67,7 @@ def validate(model, device, val_loader, loss_fn) -> Tuple[float, float]:
     return accuracy, test_loss
 
 
-def train_model(model, device, train_loader,val_loader,optimizer, scheduler,criterion,EPOCHS=50,model_path='model.pth'):
+def train_model(model, device, train_loader, val_loader, optimizer, scheduler, criterion, EPOCHS=50, model_path='model.pth'):
     train_losses = []
     train_acc = []
     test_losses = []
@@ -78,13 +79,13 @@ def train_model(model, device, train_loader,val_loader,optimizer, scheduler,crit
     lrs = []
     for epoch in range(5):
         print("EPOCH:", epoch+1)
-        #train
+        # train
         train_epoch_acc, train_epoch_loss = train(
             model, device, train_loader, optimizer, criterion)
         train_losses.append(train_epoch_loss)
         train_acc.append(train_epoch_acc)
 
-        #test
+        # test
         test_epoch_acc, test_epoch_loss = validate()(
             model, device, val_loader, criterion)
         test_losses.append(test_epoch_loss)
@@ -101,12 +102,12 @@ def train_model(model, device, train_loader,val_loader,optimizer, scheduler,crit
             torch.save(model.state_dict(), model_path)
 
         lrs.append(scheduler.get_last_lr())
-    
-    return train_losses,train_acc, test_losses, test_acc
+
+    return train_losses, train_acc, test_losses, test_acc
 
 
 def get_model_summary(model, input_size=(3, 32, 32)):
     return summary(model, input_size=input_size)
 
 
-#def 
+# def
