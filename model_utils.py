@@ -105,5 +105,8 @@ def train_model(model, device, train_loader,val_loader,optimizer, scheduler,crit
     return train_losses,train_acc, test_losses, test_acc
 
 
+def get_model_summary(model, input_size=(3, 32, 32)):
+    return summary(model, input_size=input_size)
+
 
 #def 
