@@ -1,22 +1,20 @@
 import torch
 import matplotlib.pyplot as plt
 
+def seed_everything(seed=1):
+    ''' Seed for reproducability '''
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)  # is cuda available
+    cuda = torch.cuda.is_available()
+    if cuda:
+        torch.cuda.manual_seed_all(seed)
+
+
 def get_device():
-  SEED = 3
-
-  # is cuda available
-  cuda = torch.cuda.is_available()
-  print("CUDA Available?", cuda)
-
-  torch.manual_seed(SEED)
-
-  if cuda:
-    torch.cuda.manual_seed(SEED)
-
-  use_cuda = torch.cuda.is_available()
-  device = torch.device("cuda" if use_cuda else "cpu")
-  return device
-
+    use_cuda = torch.cuda.is_available()
+    device = torch.device("cuda" if use_cuda else "cpu")
+    return device
 
 def get_misclassified_images(gbn_model,test_loader):
         
