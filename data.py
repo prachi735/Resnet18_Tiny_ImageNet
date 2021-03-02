@@ -6,6 +6,7 @@ from torchvision.datasets import ImageFolder
 import cv2
 import matplotlib.pyplot as plt
 
+torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
 class TinyImageNet():
     def __init__(self, root="~/data", transform=None, device='cpu'):
