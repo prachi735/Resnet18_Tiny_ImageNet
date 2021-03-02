@@ -29,8 +29,9 @@ class TinyImageNet():
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         if self.transform is not None:
             transformed = self.transform(image=image)
-            image = transformed["image"]
-        return image.to(self.device), torch.tensor(label).to(device)
+            image = transformed["image"].to(self.device)
+        label = torch.tensor(label).to(self.device)
+        return image
 
 
 def get_dataloader(data, shuffle=True, batch_size=128, num_workers=4, pin_memory=True):
