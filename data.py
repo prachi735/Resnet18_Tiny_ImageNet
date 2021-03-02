@@ -1,12 +1,13 @@
 from albumentations.pytorch.transforms import ToTensorV2
 import albumentations as A
 import torch
+from torch._C import device
 from torchvision.datasets import ImageFolder
 import cv2
 import matplotlib.pyplot as plt
 
 class TinyImageNet():
-    def __init__(self, root="~/data", transform=None,device='cpu'):
+    def __init__(self, root="~/data", transform=None, device='cpu'):
         dataset = ImageFolder(root=root, transform=transform)
         self.imgs = dataset.imgs
         self.targets = dataset.targets
@@ -15,6 +16,7 @@ class TinyImageNet():
         self.samples = dataset.samples
         self.transform = transform
         self.device = device
+        #self.target_transform = target_transforms
 
     def __len__(self):
         return len(self.imgs)
@@ -26,7 +28,7 @@ class TinyImageNet():
         if self.transform is not None:
             transformed = self.transform(image=image)
             image = transformed["image"]
-        return image, label
+        return image.to(self.device), torch.tensor(label).to(device)
 
 
 def get_dataloader(data, shuffle=True, batch_size=128, num_workers=4, pin_memory=True):
