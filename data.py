@@ -2,8 +2,8 @@ from albumentations.pytorch.transforms import ToTensorV2
 import albumentations as A
 import torch
 from torchvision.datasets import ImageFolder
-from PIL import Image
-import numpy as np
+import cv2
+import matplotlib.pyplot as plt
 
 class TinyImageNet():
     def __init__(self, root="~/data", transform=None):
@@ -19,9 +19,9 @@ class TinyImageNet():
         return len(self.imgs)
 
     def __getitem__(self, index):
-        image_path, label = self.imgs[index][0], self.targets[index]
-        pillow_image = Image.open(image_path)
-        image = np.array(pillow_image)
+        image_filepath, label = self.imgs[index]
+        image = cv2.imread(image_filepath)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         if self.transform is not None:
             transformed = self.transform(image=image)
             image = transformed["image"]
@@ -38,25 +38,33 @@ def get_dataloader(data, shuffle=True, batch_size=128, num_workers=4, pin_memory
     return dataloader
 
 
-def get_transforms(norm_mean, norm_std):
+def get_transforms(type, norm_mean, norm_std):
     '''
     get the train and test transform by albumentations
     '''
-    train_transform = A.Compose([
-        A.PadIfNeeded(min_height=36, min_width=36, border_mode=4,
-                      value=[0, 0, 0], always_apply=True),
-        A.RandomResizedCrop(height=32, width=32, always_apply=True),
-        A.Flip(0.5),
-        A.Cutout(num_holes=1, max_h_size=8, max_w_size=8,
-                 fill_value=0, always_apply=False, p=0.5),
-        A.Normalize(mean=norm_mean, std=norm_std),
-        ToTensorV2()
-    ])
-    test_transform = A.Compose([A.Normalize(mean=norm_mean, std=norm_std),
-                                ToTensorV2()
-                                ])
-    return train_transform, test_transform
+    if type == 'train':
+        return A.Compose([
+            A.PadIfNeeded(min_height=64, min_width=64,
+                          value=[0, 0, 0], always_apply=True),
+            A.RandomResizedCrop(height=64, width=64, always_apply=True),
+            A.Flip(0.5),
+            A.Cutout(num_holes=1, max_h_size=8, max_w_size=8,
+                     fill_value=0, always_apply=False, p=0.5),
+            #A.Normalize(mean=norm_mean, std=norm_std,max_pixel_value=255.0,),
+            ToTensorV2()
+        ])
+    else:
+        return A.Compose([A.Normalize(mean=norm_mean, std=norm_std),
+                          ToTensorV2()
+                          ])
 
-
-
-#def get_class(idx):
+def plot_sample_images(dataloader, classes=None, ncols=5, nrows=5, fig_size=(3, 3)):
+    images, targets = next(iter(dataloader))
+    fig, axes = plt.subplots(ncols=ncols, nrows=nrows, figsize=fig_size)
+    fig.subplots_adjust(hspace=0.5)
+    fig.suptitle('Sample Images in Data')
+    for ax, image, target in zip(axes.flatten(), images, targets):
+        ax.imshow(image.permute(2, 1, 0))
+        ax.set(title='{t}'.format(
+            t=classes[target.item()]))
+        ax.axis('off')
