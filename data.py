@@ -6,7 +6,7 @@ import cv2
 import matplotlib.pyplot as plt
 
 class TinyImageNet():
-    def __init__(self, root="~/data", transform=None,device):
+    def __init__(self, root="~/data", transform=None,device='cpu'):
         dataset = ImageFolder(root=root, transform=transform)
         self.imgs = dataset.imgs
         self.targets = dataset.targets
