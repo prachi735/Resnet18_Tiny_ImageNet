@@ -25,7 +25,6 @@ class TinyImageNet():
         if self.transform is not None:
             transformed = self.transform(image=image)
             image = transformed["image"]
-
         return image, label
 
 
