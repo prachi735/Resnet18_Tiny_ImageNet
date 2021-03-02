@@ -6,7 +6,7 @@ import cv2
 import matplotlib.pyplot as plt
 
 class TinyImageNet():
-    def __init__(self, root="~/data", transform=None):
+    def __init__(self, root="~/data", transform=None,device):
         dataset = ImageFolder(root=root, transform=transform)
         self.imgs = dataset.imgs
         self.targets = dataset.targets
@@ -14,6 +14,7 @@ class TinyImageNet():
         self.classes = dataset.classes
         self.samples = dataset.samples
         self.transform = transform
+        self.device = device
 
     def __len__(self):
         return len(self.imgs)
@@ -25,7 +26,7 @@ class TinyImageNet():
         if self.transform is not None:
             transformed = self.transform(image=image)
             image = transformed["image"]
-        return image, label
+        return image.to(self.device), label.to(self.device)
 
 
 def get_dataloader(data, shuffle=True, batch_size=128, num_workers=4, pin_memory=True):
