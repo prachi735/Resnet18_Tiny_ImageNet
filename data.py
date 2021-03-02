@@ -6,6 +6,7 @@ from torchvision.datasets import ImageFolder
 import cv2
 import matplotlib.pyplot as plt
 
+
 class TinyImageNet():
     def __init__(self, root="~/data", transform=None, device='cpu'):
         dataset = ImageFolder(root=root, transform=transform)
@@ -53,13 +54,14 @@ def get_transforms(type, norm_mean, norm_std):
             A.Flip(0.5),
             A.Cutout(num_holes=1, max_h_size=8, max_w_size=8,
                      fill_value=0, always_apply=False, p=0.5),
-            #A.Normalize(mean=norm_mean, std=norm_std,max_pixel_value=255.0,),
+            A.Normalize(mean=norm_mean, std=norm_std, max_pixel_value=255.0,),
             ToTensorV2()
         ])
     else:
         return A.Compose([A.Normalize(mean=norm_mean, std=norm_std),
                           ToTensorV2()
                           ])
+
 
 def plot_sample_images(dataloader, classes=None, ncols=5, nrows=5, fig_size=(3, 3)):
     images, targets = next(iter(dataloader))
