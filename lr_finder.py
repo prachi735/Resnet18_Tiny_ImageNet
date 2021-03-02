@@ -662,7 +662,7 @@ class StateCacher(object):
 # , val_loader):
 def get_lr_rates(model,criterion, optimizer, train_loader, device, end_lr=1, step_mode="exp",val_loader=None,plot=True):
     lr_finder = LRFinder(model, optimizer, criterion, device=device)
-    lr_finder.range_test(train_loader,  end_lr=1, num_iter=len(train_loader), step_mode="exp", val_loader=val_loader)
+    lr_finder.range_test(train_loader,  end_lr=end_lr, num_iter=len(train_loader), step_mode=step_mode, val_loader=val_loader)
     if plot:
         lr_finder.plot(log_lr=False, skip_start=5, skip_end=5)
     return lr_finder.get_suggested_lr()
