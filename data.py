@@ -2,7 +2,8 @@ from albumentations.pytorch.transforms import ToTensorV2
 import albumentations as A
 import torch
 from torchvision.datasets import ImageFolder
-
+from PIL import Image
+import numpy as np
 
 class TinyImageNet():
     def __init__(self, root="~/data", transform=None):
@@ -18,8 +19,9 @@ class TinyImageNet():
         return len(self.imgs)
 
     def __getitem__(self, index):
-        image, label = self.imgs[index], self.targets[index]
-
+        image_path, label = self.imgs[index], self.targets[index]
+        pillow_image = Image.open(image_path)
+        image = np.array(pillow_image)
         if self.transform is not None:
             transformed = self.transform(image=image)
             image = transformed["image"]
