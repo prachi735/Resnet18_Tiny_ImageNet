@@ -26,7 +26,7 @@ class TinyImageNet():
         if self.transform is not None:
             transformed = self.transform(image=image)
             image = transformed["image"]
-        return image.to(self.device), label.to(self.device)
+        return image, label
 
 
 def get_dataloader(data, shuffle=True, batch_size=128, num_workers=4, pin_memory=True):
