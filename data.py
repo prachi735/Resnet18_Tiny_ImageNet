@@ -1,7 +1,7 @@
 from albumentations.pytorch.transforms import ToTensorV2
 import albumentations as A
 import torch
-from torch._C import device
+import numpy as np
 from torchvision.datasets import ImageFolder
 import cv2
 import matplotlib.pyplot as plt
@@ -71,7 +71,7 @@ def plot_sample_images(dataloader, classes=None, ncols=5, nrows=5, fig_size=(3, 
     fig.subplots_adjust(hspace=0.5)
     fig.suptitle('Sample Images in Data')
     for ax, image, target in zip(axes.flatten(), images, targets):
-        ax.imshow(image.permute(2, 1, 0))
+        ax.imshow(image.permute(2, 1, 0).astype(np.uint8))
         ax.set(title='{t}'.format(
             t=classes[target.item()]))
         ax.axis('off')
