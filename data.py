@@ -31,7 +31,7 @@ class TinyImageNet():
             transformed = self.transform(image=image)
             image = transformed["image"].to(self.device)
         label = torch.tensor(label).to(self.device)
-        return image
+        return image, label
 
 
 def get_dataloader(data, shuffle=True, batch_size=128, num_workers=4, pin_memory=True):
