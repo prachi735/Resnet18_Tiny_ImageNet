@@ -71,7 +71,7 @@ def plot_sample_images(dataloader, classes=None, ncols=5, nrows=5, fig_size=(3, 
     fig.subplots_adjust(hspace=0.5)
     fig.suptitle('Sample Images in Data')
     for ax, image, target in zip(axes.flatten(), images, targets):
-        ax.imshow(np.uint8(image.permute(2, 1, 0).to('cpu')))
+        ax.imshow(np.uint8(torch.Tensor.cpu(image.permute(2, 1, 0))))
         #ax.imshow()
         ax.set(title='{t}'.format(
             t=classes[target.item()]))
