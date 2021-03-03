@@ -1,42 +1,3 @@
-
-Skip to content
-Pull requests
-Issues
-Marketplace
-Explore
-@prachi735
-lokeshpara /
-Freecodecamp
-
-1
-0
-
-    1
-
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-
-    Insights
-
-Freecodecamp/course_project/models/resnet.py /
-@lokeshpara
-lokeshpara Add files via upload
-Latest commit 2187ccf on 29 Jun 2020
-History
-1 contributor
-127 lines (101 sloc) 4.4 KB
-'''ResNet in PyTorch.
-For Pre-activation ResNet, see 'preact_resnet.py'.
-Reference:
-[1] Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
-    Deep Residual Learning for Image Recognition. arXiv:1512.03385
-'''
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -46,15 +7,18 @@ class BasicBlock(nn.Module):
 
     def __init__(self, in_planes, planes, stride=1, dropout=0.0):
         super(BasicBlock, self).__init__()
-        self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(
+            in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
-        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3,
+                               stride=1, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(planes)
 
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion*planes:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
+                nn.Conv2d(in_planes, self.expansion*planes,
+                          kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(self.expansion*planes)
             )
         self.dropout = dropout
@@ -77,15 +41,18 @@ class Bottleneck(nn.Module):
         super(Bottleneck, self).__init__()
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
-        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
+        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3,
+                               stride=stride, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(planes)
-        self.conv3 = nn.Conv2d(planes, self.expansion*planes, kernel_size=1, bias=False)
+        self.conv3 = nn.Conv2d(planes, self.expansion *
+                               planes, kernel_size=1, bias=False)
         self.bn3 = nn.BatchNorm2d(self.expansion*planes)
 
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion*planes:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
+                nn.Conv2d(in_planes, self.expansion*planes,
+                          kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(self.expansion*planes)
             )
 
@@ -104,7 +71,8 @@ class ResNet(nn.Module):
         self.in_planes = 64
         self.dropout = dropout
 
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=3,
+                               stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
@@ -116,7 +84,8 @@ class ResNet(nn.Module):
         strides = [stride] + [1]*(num_blocks-1)
         layers = []
         for stride in strides:
-            layers.append(block(self.in_planes, planes, stride, dropout=self.dropout))
+            layers.append(block(self.in_planes, planes,
+                                stride, dropout=self.dropout))
             self.in_planes = planes * block.expansion
         return nn.Sequential(*layers)
 
@@ -134,20 +103,20 @@ class ResNet(nn.Module):
 
 
 def ResNet18(num_classes, dropout=0.0):
-    return ResNet(BasicBlock, [2,2,2,2], num_classes=num_classes, dropout=dropout)
+    return ResNet(BasicBlock, [2, 2, 2, 2], num_classes=num_classes, dropout=dropout)
+
 
 def ResNet34(num_classes, dropout=0.0):
-    return ResNet(BasicBlock, [3,4,6,3],num_classes=num_classes, dropout=dropout)
+    return ResNet(BasicBlock, [3, 4, 6, 3], num_classes=num_classes, dropout=dropout)
 
 
 def ResNet50(num_classes, dropout=0.0):
-    return ResNet(Bottleneck, [3,4,6,3],num_classes=num_classes, dropout=dropout)
+    return ResNet(Bottleneck, [3, 4, 6, 3], num_classes=num_classes, dropout=dropout)
+
 
 def ResNet101(num_classes, dropout=0.0):
-    return ResNet(Bottleneck, [3,4,23,3],num_classes=num_classes, dropout=dropout)
+    return ResNet(Bottleneck, [3, 4, 23, 3], num_classes=num_classes, dropout=dropout)
 
 
 def ResNet152(num_classes, dropout=0.0):
-    return ResNet(Bottleneck, [3,8,36,3],num_classes=num_classes, dropout=dropout)
-
-
+    return ResNet(Bottleneck, [3, 8, 36, 3], num_classes=num_classes, dropout=dropout)

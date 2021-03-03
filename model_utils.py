@@ -5,7 +5,7 @@ from tqdm import tqdm
 from torchsummary import summary
 
 
-def train(model, device, train_loader, optimizer, criterion, scheduler=None) -> Tuple[float, float]:
+def train(model, device, train_loader, optimizer, criterion, l1_decay=0, l2_decay=0, scheduler=None) -> Tuple[float, float]:
     model.train()
     pbar = tqdm(train_loader)
     correct = 0
@@ -21,13 +21,13 @@ def train(model, device, train_loader, optimizer, criterion, scheduler=None) -> 
         y_pred = model(data)
 
         # Calculate loss
-        loss = criterion(y_pred, target)
+        loss = calculate_loss(criterion, y_pred, target, l1_decay, model, l2_decay)
 
         # Backpropagation
         loss.backward()
         optimizer.step()
         
-        if scheduler != None:
+        if scheduler:
             scheduler.step()
 
         # Update pbar-tqdm
@@ -43,6 +43,20 @@ def train(model, device, train_loader, optimizer, criterion, scheduler=None) -> 
             desc=f'Loss={loss.item()} Batch_id={batch_idx} Accuracy={accuracy:0.2f}')
 
     return accuracy, loss
+
+def calculate_loss(criterion, y_pred, target, l1_decay, model, l2_decay):
+    loss = criterion(y_pred, target)
+    if l1_decay > 0:
+        l1_loss = 0
+        for param in model.parameters():
+            l1_loss += torch.norm(param, 1)
+        loss += l1_decay * l1_loss
+    if l2_decay > 0:
+        l2_loss = 0
+        for param in model.parameters():
+            l2_loss += torch.norm(param, 2)
+        loss += l2_decay * l2_loss
+    return loss
 
 
 def validate(model, device, val_loader, loss_fn) -> Tuple[float, float]:
