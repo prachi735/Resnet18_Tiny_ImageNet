@@ -83,42 +83,42 @@ def validate(model, device, val_loader, loss_fn) -> Tuple[float, float]:
     return accuracy, test_loss
 
 
-def train_model(model, device, train_loader, val_loader, optimizer, scheduler, criterion, EPOCHS=50, model_path='model.pth',lr_policy = None):
-    train_losses = []
-    train_acc = []
-    test_losses = []
-    test_acc = []
+# def train_model(model, device, train_loader, val_loader, optimizer, scheduler, criterion, EPOCHS=50, model_path='model.pth',lr_policy = None):
+#     train_losses = []
+#     train_acc = []
+#     test_losses = []
+#     test_acc = []
 
-    best_test_acc = 0
+#     best_test_acc = 0
 
-    lrs = []
-    for epoch in range(EPOCHS):
-        print("EPOCH:", epoch+1)
-        # train
-        train_epoch_acc, train_epoch_loss = (model, device, train_loader, optimizer, criterion, l1_decay=0, l2_decay=0, scheduler=None)
-        train_losses.append(train_epoch_loss)
-        train_acc.append(train_epoch_acc)
+#     lrs = []
+#     for epoch in range(EPOCHS):
+#         print("EPOCH:", epoch+1)
+#         # train
+#         train_epoch_acc, train_epoch_loss = (model, device, train_loader, optimizer, criterion, l1_decay=0, l2_decay=0, scheduler=None)
+#         train_losses.append(train_epoch_loss)
+#         train_acc.append(train_epoch_acc)
 
-        # test
-        test_epoch_acc, test_epoch_loss = validate()(
-            model, device, val_loader, criterion)
-        test_losses.append(test_epoch_loss)
-        test_acc.append(test_epoch_acc)
+#         # test
+#         test_epoch_acc, test_epoch_loss = validate()(
+#             model, device, val_loader, criterion)
+#         test_losses.append(test_epoch_loss)
+#         test_acc.append(test_epoch_acc)
 
-        if lr_policy != 'CYCLIC':
-            scheduler.step()
+#         if lr_policy != 'CYCLIC':
+#             scheduler.step()
 
-        # remember best accuracy and save the model
-        is_best = test_epoch_acc > best_test_acc
-        best_test_acc = max(test_epoch_acc, best_test_acc)
+#         # remember best accuracy and save the model
+#         is_best = test_epoch_acc > best_test_acc
+#         best_test_acc = max(test_epoch_acc, best_test_acc)
 
-        if is_best:
-            print('Saving Model for accuracy: ', test_epoch_acc)
-            torch.save(model.state_dict(), model_path)
+#         if is_best:
+#             print('Saving Model for accuracy: ', test_epoch_acc)
+#             torch.save(model.state_dict(), model_path)
 
-        lrs.append(scheduler.get_last_lr())
+#         lrs.append(scheduler.get_last_lr())
 
-    return {'train_losses': train_losses, 'train_acc': train_acc, 'test_losses': test_losses, 'test_acc': test_acc, 'lrs': lrs}
+#     return {'train_losses': train_losses, 'train_acc': train_acc, 'test_losses': test_losses, 'test_acc': test_acc, 'lrs': lrs}
 
 
 def get_model_summary(model, input_size=(3, 32, 32)):
