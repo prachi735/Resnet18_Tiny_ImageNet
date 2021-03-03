@@ -50,17 +50,18 @@ def get_transforms(type, norm_mean, norm_std):
     '''
     if type == 'train':
         return A.Compose([
-            A.PadIfNeeded(min_height=64, min_width=64,
-                          value=[0, 0, 0], always_apply=True),
-            A.RandomResizedCrop(height=64, width=64, always_apply=True),
-            A.Flip(0.5),
-            A.Cutout(num_holes=1, max_h_size=8, max_w_size=8,
-                     fill_value=0, always_apply=False, p=0.5),
-            A.Normalize(mean=norm_mean, std=norm_std, max_pixel_value=255.0,),
+            # A.PadIfNeeded(min_height=64, min_width=64,
+            #               value=[0, 0, 0], always_apply=True),
+            # A.RandomResizedCrop(height=64, width=64, always_apply=True),
+            # A.Flip(0.5),
+            # A.Cutout(num_holes=1, max_h_size=8, max_w_size=8,
+            #          fill_value=0, always_apply=False, p=0.5),
+            # A.Normalize(mean=norm_mean, std=norm_std, max_pixel_value=255.0,),
             ToTensorV2()
         ])
     else:
-        return A.Compose([A.Normalize(mean=norm_mean, std=norm_std),
+        return A.Compose([
+            # A.Normalize(mean=norm_mean, std=norm_std),
                           ToTensorV2()
                           ])
 
@@ -71,8 +72,8 @@ def plot_sample_images(dataloader, classes=None, ncols=5, nrows=5, fig_size=(3, 
     fig.subplots_adjust(hspace=0.5)
     fig.suptitle('Sample Images in Data')
     for ax, image, target in zip(axes.flatten(), images, targets):
-        # ax.imshow(image.permute(2, 1, 0))
-        ax.imshow()
+        ax.imshow(np.uint8(image.permute(2, 1, 0)))
+        #ax.imshow()
         ax.set(title='{t}'.format(
             t=classes[target.item()]))
         ax.axis('off')

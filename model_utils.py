@@ -95,8 +95,7 @@ def train_model(model, device, train_loader, val_loader, optimizer, scheduler, c
     for epoch in range(EPOCHS):
         print("EPOCH:", epoch+1)
         # train
-        train_epoch_acc, train_epoch_loss = train(
-            model, device, train_loader, optimizer, scheduler, criterion)
+        train_epoch_acc, train_epoch_loss = (model, device, train_loader, optimizer, criterion, l1_decay=0, l2_decay=0, scheduler=None)
         train_losses.append(train_epoch_loss)
         train_acc.append(train_epoch_acc)
 
