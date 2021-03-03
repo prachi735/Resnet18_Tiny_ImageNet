@@ -5,7 +5,7 @@ from tqdm import tqdm
 from torchsummary import summary
 
 
-def train(model, device, train_loader, optimizer, scheduler, loss_fn) -> Tuple[float, float]:
+def train(model, device, train_loader, optimizer, scheduler, criterion) -> Tuple[float, float]:
     model.train()
     pbar = tqdm(train_loader)
     correct = 0
@@ -21,11 +21,12 @@ def train(model, device, train_loader, optimizer, scheduler, loss_fn) -> Tuple[f
         y_pred = model(data)
 
         # Calculate loss
-        loss = loss_fn(y_pred, target)
+        loss = criterion(y_pred, target)
 
         # Backpropagation
         loss.backward()
         optimizer.step()
+        scheduler.step()
 
         # Update pbar-tqdm
 
