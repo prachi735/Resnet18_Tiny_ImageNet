@@ -34,8 +34,7 @@ class TinyImageNet():
         return image, label
 
 
-def get_dataloader(data, shuffle=True, batch_size=128, num_workers=4, pin_memory=True):
-    cuda = torch.cuda.is_available()
+def get_dataloader(data, cuda, shuffle=True, batch_size=128, num_workers=4, pin_memory=True):
 
     dataloader_args = dict(shuffle=shuffle, batch_size=batch_size, num_workers=num_workers,
                            pin_memory=pin_memory) if cuda else dict(shuffle=True, batch_size=64)
