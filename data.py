@@ -55,12 +55,12 @@ def get_transforms(type, norm_mean, norm_std):
             # A.Flip(0.5),
             # A.Cutout(num_holes=1, max_h_size=8, max_w_size=8,
             #          fill_value=0, always_apply=False, p=0.5),
-            # A.Normalize(mean=norm_mean, std=norm_std, max_pixel_value=255.0,),
+            A.Normalize(mean=norm_mean, std=norm_std, max_pixel_value=255.0,),
             ToTensorV2()
         ])
     else:
         return A.Compose([
-            # A.Normalize(mean=norm_mean, std=norm_std),
+            A.Normalize(mean=norm_mean, std=norm_std),
                           ToTensorV2()
                           ])
 
