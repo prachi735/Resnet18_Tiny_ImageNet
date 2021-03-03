@@ -665,4 +665,5 @@ def get_lr_rates(model,criterion, optimizer, train_loader, device, end_lr=1, ste
     lr_finder.range_test(train_loader,  end_lr=end_lr, num_iter=len(train_loader), step_mode=step_mode, val_loader=val_loader)
     if plot:
         lr_finder.plot(log_lr=False, skip_start=5, skip_end=5)
+    lr_finder.reset()
     return lr_finder.get_suggested_lr()
