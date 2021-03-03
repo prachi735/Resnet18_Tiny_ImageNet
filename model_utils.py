@@ -5,7 +5,7 @@ from tqdm import tqdm
 from torchsummary import summary
 
 
-def train(model, device, train_loader, optimizer, scheduler, criterion) -> Tuple[float, float]:
+def train(model, device, train_loader, optimizer, criterion, scheduler=None) -> Tuple[float, float]:
     model.train()
     pbar = tqdm(train_loader)
     correct = 0
@@ -26,7 +26,9 @@ def train(model, device, train_loader, optimizer, scheduler, criterion) -> Tuple
         # Backpropagation
         loss.backward()
         optimizer.step()
-        scheduler.step()
+        
+        if scheduler != None:
+            scheduler.step()
 
         # Update pbar-tqdm
 
@@ -53,7 +55,6 @@ def validate(model, device, val_loader, loss_fn) -> Tuple[float, float]:
             output = model(data)
             # sum up batch loss
             test_loss += loss_fn(output, target).item()
-            # test_loss += F.nll_loss(output, target, reduction='sum').item()
             # get the index of the max log-probability
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
@@ -68,7 +69,7 @@ def validate(model, device, val_loader, loss_fn) -> Tuple[float, float]:
     return accuracy, test_loss
 
 
-def train_model(model, device, train_loader, val_loader, optimizer, scheduler, criterion, EPOCHS=50, model_path='model.pth'):
+def train_model(model, device, train_loader, val_loader, optimizer, scheduler, criterion, EPOCHS=50, model_path='model.pth',lr_policy = None):
     train_losses = []
     train_acc = []
     test_losses = []
@@ -77,7 +78,7 @@ def train_model(model, device, train_loader, val_loader, optimizer, scheduler, c
     best_test_acc = 0
 
     lrs = []
-    for epoch in range(5):
+    for epoch in range(EPOCHS):
         print("EPOCH:", epoch+1)
         # train
         train_epoch_acc, train_epoch_loss = train(
@@ -91,7 +92,8 @@ def train_model(model, device, train_loader, val_loader, optimizer, scheduler, c
         test_losses.append(test_epoch_loss)
         test_acc.append(test_epoch_acc)
 
-        scheduler.step()
+        if lr_policy != 'CYCLIC':
+            scheduler.step()
 
         # remember best accuracy and save the model
         is_best = test_epoch_acc > best_test_acc
@@ -109,5 +111,3 @@ def train_model(model, device, train_loader, val_loader, optimizer, scheduler, c
 def get_model_summary(model, input_size=(3, 32, 32)):
     return summary(model, input_size=input_size)
 
-
-# def
