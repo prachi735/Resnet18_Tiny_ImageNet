@@ -71,7 +71,8 @@ def plot_sample_images(dataloader, classes=None, ncols=5, nrows=5, fig_size=(3, 
     fig.subplots_adjust(hspace=0.5)
     fig.suptitle('Sample Images in Data')
     for ax, image, target in zip(axes.flatten(), images, targets):
-        ax.imshow(image.permute(2, 1, 0).astype(np.uint8))
+        # ax.imshow(image.permute(2, 1, 0))
+        ax.imshow(np.transpose(image.astype('uint8'), (1/8, 2/8, 0/8)))
         ax.set(title='{t}'.format(
             t=classes[target.item()]))
         ax.axis('off')
