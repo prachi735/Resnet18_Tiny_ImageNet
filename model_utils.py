@@ -75,14 +75,13 @@ def train_model(model, device, train_loader, val_loader, optimizer, scheduler, c
     test_acc = []
 
     best_test_acc = 0
-    model_path = 'session11_model.pth'
 
     lrs = []
     for epoch in range(5):
         print("EPOCH:", epoch+1)
         # train
         train_epoch_acc, train_epoch_loss = train(
-            model, device, train_loader, optimizer, criterion)
+            model, device, train_loader, optimizer, scheduler, criterion)
         train_losses.append(train_epoch_loss)
         train_acc.append(train_epoch_acc)
 
@@ -104,7 +103,7 @@ def train_model(model, device, train_loader, val_loader, optimizer, scheduler, c
 
         lrs.append(scheduler.get_last_lr())
 
-    return train_losses, train_acc, test_losses, test_acc
+    return {'train_losses': train_losses, 'train_acc': train_acc, 'test_losses': test_losses, 'test_acc': test_acc, 'lrs': lrs}
 
 
 def get_model_summary(model, input_size=(3, 32, 32)):
