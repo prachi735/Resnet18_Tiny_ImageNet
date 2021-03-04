@@ -34,10 +34,15 @@ class TinyImageNet():
         return image, label
 
 
-def get_dataloader(data, cuda, sampler, batch_size=128, num_workers=4, pin_memory=True):
+def get_dataloader(data, cuda, sampler=None, shuffle=False, batch_size=128, num_workers=4, pin_memory=True):
 
-    dataloader_args = dict(sampler=sampler, batch_size=batch_size, num_workers=num_workers,
-                           pin_memory=pin_memory) if cuda else dict(shuffle=True, batch_size=64)
+    if sampler:
+        dataloader_args = dict(sampler=sampler, batch_size=batch_size, num_workers=num_workers,
+                            pin_memory=pin_memory) if cuda else dict(shuffle=True, batch_size=64)
+    else:
+        dataloader_args = dict(shuffle=shuffle, batch_size=batch_size, num_workers=num_workers,
+                               pin_memory=pin_memory) if cuda else dict(shuffle=True, batch_size=64)
+    
     dataloader = torch.utils.data.DataLoader(data, ** dataloader_args)
 
     return dataloader
